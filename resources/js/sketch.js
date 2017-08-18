@@ -9,7 +9,7 @@ function setup() {
   for (var i = 0; i < 100; i++) {
     points.push(new Point( dimensions=[random(width), random(height)] ));
   }
-  for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < 5; i++) {
     var color = colors[i]
     centroids.push(new Centroid(
       id=i,
@@ -27,14 +27,16 @@ function draw() {
     }
     ellipse(point.dimensions[0], point.dimensions[1], 5, 5);
   }
+  for (centroid of centroids) {
+    centroid.display()
+  }
   for (var i = 0; i < centroids.length; i++) {
     var centroid = centroids[i]
-    fill(centroid.color);
-    ellipse(centroid.dimensions[0], centroid.dimensions[1], 10, 10);
   }
 }
 
 function findEuclideanDistance(pointDimensions, centroidDimensions) {
+  // Euclidian distance - a squared + b squared = c squared
   var squaredErrorTotal = 0;
   for (var i = 0; i < pointDimensions.length; i++) {
     squaredErrorTotal += Math.pow(pointDimensions[i] - centroidDimensions[i], 2);
@@ -45,13 +47,15 @@ function findEuclideanDistance(pointDimensions, centroidDimensions) {
 
 function kmeans(points, centroids) {
   for (point of points) {
-    point.closestCentroid = {};
-    point.closestCentroidDistance = undefined;
+    point.reset();
     for (centroid of centroids) {
+      centroid.points = [];
       var euclideanDistance = findEuclideanDistance(centroid.dimensions, point.dimensions);
-      if (!point.closestCentroid || !point.closestCentroidDistance || euclideanDistance < point.closestCentroidDistance) {
-        point.closestCentroidDistance = euclideanDistance;
-        point.closestCentroid = centroid;
+      // If we don't yet have a closest Centroid or if distance to this centroid is less than others,
+      // assign it as closest
+      if (!point.closestCentroidDistance || euclideanDistance < point.closestCentroidDistance) {
+        point.assignClosest(centroid, euclideanDistance);
+        centroid.add(point);
       }
     }
   }
@@ -60,8 +64,7 @@ function kmeans(points, centroids) {
 
 function findAverageLocation() {
   for (centroid of centroids) {
-    centroid.pointDimensionTotals = [];
-    centroid.pointCount = 0;
+    centroid.reset();
     for (point of points) {
       // For each point, add up the total for each dimension (e.g [0] is x, [1] is y)
       if (point.closestCentroid == centroid) {
@@ -75,6 +78,7 @@ function findAverageLocation() {
         centroid.pointCount += 1;
       }
     }
+    // For each dimension, take total and divide by count to get average
     for (var i = 0; i < centroid.dimensions.length; i++) {
       centroid.dimensions[i] = centroid.pointDimensionTotals[i] / centroid.pointCount;
     }
