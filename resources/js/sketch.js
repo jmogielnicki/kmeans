@@ -1,4 +1,3 @@
-import iris_data from './data/iris_data.csv';
 
 var points = [];
 var centroids = []
