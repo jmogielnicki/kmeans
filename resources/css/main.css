@@ -1,0 +1,56 @@
+html, body {
+  height: 100%;
+  padding: 0 20px;
+}
+
+canvas {
+  border: solid 1px lightgrey
+}
+
+.explanation-text {
+  width: 600px;
+  height: 60px;
+}
+
+#canvasContainer {
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+}
+
+#canvasHorizontalContainer {
+  display: flex;
+}
+
+.canvas-text {
+  display: inline-block;
+}
+
+.vertical {
+  /*text-orientation: upright;
+  writing-mode: vertical-rl;*/
+  align-self: center;
+  margin: 5px;
+}
+
+.horizontal {
+  text-align: center;
+  margin: 5px;
+}
+
+button, select {
+  margin: 6px 0;
+  color: #6496c8;
+  background: rgba(0,0,0,0);
+  border: solid 2px #6496c8;
+}
+button:hover,
+button.hover {
+  border-color: #346392;
+  color: #346392;
+}
+button:active,
+button.active {
+  border-color: #27496d;
+  color: #27496d;
+}
